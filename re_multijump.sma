@@ -1,7 +1,11 @@
 #include <amxmodx>
 #include <reapi>
+#include <fakemeta>
 
 #define MAXJUMPS	2			// maximum jumps
+
+#define IN_JUMP			(1<<1)
+#define FL_ONGROUND		(1<<9)
 
 
 new const PLUGIN[] = "Multijump"
