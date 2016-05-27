@@ -2,7 +2,7 @@
 #include <reapi>
 #include <colorchat>
 
-#define LIVE_UPDATE
+#define LIVE_UPDATE 	// Azonnali frissítés
 
 #define IsValidPlayers(%1,%2) ((1 <= %1 <= 32) && (1 <= %2 <= 32))
 
@@ -53,7 +53,7 @@ public eDeathMsg()
 #endif
 	new victim[32];
 	get_user_name(pVictim, victim, charsmax(victim));
-	client_print_color(print_team_default, g_iAssist[pVictim], "^4[%s]^1 You've got ^4+1 frag, because you helped in kill ^3%s.", PREFIX, victim);	
+	client_print_color(g_iAssist[pVictim], print_team_default, "^4[%s]^1 Kaptál ^4+1^1 fraget, mert segítettél^3 %s ^1megölésében.", PREFIX, victim);	
 	ResetAssist(pVictim);
 }
 
