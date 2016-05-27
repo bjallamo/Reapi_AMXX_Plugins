@@ -1,6 +1,5 @@
 #include <amxmodx>
 #include <reapi>
-#include <fakemeta>
 
 #define MAXJUMPS	2			// maximum jumps
 
