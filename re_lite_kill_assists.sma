@@ -17,9 +17,9 @@ public plugin_init()
 	register_plugin("Lite Kill Assist", VERSION, "neygomon");	// Reapi modification by mforce
 	register_cvar("lite_assist", VERSION, FCVAR_SERVER | FCVAR_SPONLY);
 	
-	register_event("HLTV",     "eRoundStart", "a", "1=0", "2=0");
-	register_event("DeathMsg", "eDeathMsg", "a", "1>0");
-	register_event("Damage",   "eDamage", "be", "2!0", "3=0", "4!0");
+	register_event("HLTV", "eRoundStart", "a", "1=0", "2=0");
+	RegisterHookChain(RG_CBasePlayer_Killed, "eDeathMsg", 1);
+	RegisterHookChain(RG_CBasePlayer_TakeDamage, "eDamage", 1);
 }
 
 public client_disconnect(id)
@@ -32,38 +32,36 @@ public eRoundStart()
 		ResetAssist(pl[i]);
 }
 	
-public eDeathMsg()
+public eDeathMsg(const this, pevAttacker, iGib)
 {
-	new pKiller = read_data(1);
-	new pVictim = read_data(2);
-	if(pKiller == pVictim || pKiller == g_iAssist[pVictim] || !is_user_connected(g_iAssist[pVictim])) return;
+	if(pevAttacker == this || pevAttacker == g_iAssist[this] || !is_user_connected(g_iAssist[this])) return;
 	
-	rg_add_account(g_iAssist[pVictim], 300, true);
-	new iFrags = get_user_frags(g_iAssist[pVictim]) + 1;
-	set_entvar(g_iAssist[pVictim], var_frags, float(iFrags));
+	rg_add_account(g_iAssist[this], 300, true);
+	new iFrags = get_user_frags(g_iAssist[this]) + 1;
+	set_entvar(g_iAssist[this], var_frags, float(iFrags));
 #if defined LIVE_UPDATE
 	static mScoreInfo; if(!mScoreInfo) mScoreInfo = get_user_msgid("ScoreInfo");
 	message_begin(MSG_ALL, mScoreInfo);
-	write_byte(g_iAssist[pVictim]);
+	write_byte(g_iAssist[this]);
 	write_short(iFrags);
-	write_short(get_member(g_iAssist[pVictim], m_iDeaths));
+	write_short(get_member(g_iAssist[this], m_iDeaths));
 	write_short(0);
-	write_short(get_member(g_iAssist[pVictim], m_iTeam));
+	write_short(get_member(g_iAssist[this], m_iTeam));
 	message_end();
 #endif
 	new victim[32];
-	get_user_name(pVictim, victim, charsmax(victim));
-	client_print_color(g_iAssist[pVictim], print_team_default, "^4[%s]^1 Kaptál ^4+1^1 fraget, mert segítettél^3 %s ^1megölésében.", PREFIX, victim);	
-	ResetAssist(pVictim);
+	get_user_name(this, victim, charsmax(victim));
+	client_print_color(g_iAssist[this], print_team_default, "^4[%s]^1 Kaptál ^4+1^1 fraget, mert segítettél^3 %s ^1megölésében.", PREFIX, victim);	
+	ResetAssist(this);
 }
 
-public eDamage(id)
+public eDamage(const this, pevInflictor, pevAttacker, Float:flDamage, bitsDamageType)
 {
-	static pAttacker; pAttacker = get_user_attacker(id);
-	if(id == pAttacker || !IsValidPlayers(id, pAttacker)) return;
-	g_iAssDamage[id][pAttacker] += read_data(2);
-	if(!g_iAssist[id] && g_iAssDamage[id][pAttacker] >= 50)
-		g_iAssist[id] = pAttacker;
+	if(this == pevAttacker || !IsValidPlayers(this, pevAttacker)) return;
+	if(!GetHookChainReturn()) return; // TakeDamage is not get damage from teammate more, even if "mp_friendlyfire" is "1"
+	g_iAssDamage[this][pevAttacker] += flDamage;
+	if(!g_iAssist[this] && g_iAssDamage[this][pAttacker] >= 50)
+		g_iAssist[this] = pevAttacker;
 }
 
 ResetAssist(id)
