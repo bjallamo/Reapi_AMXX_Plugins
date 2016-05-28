@@ -39,13 +39,13 @@ public eDeathMsg()
 	if(pKiller == pVictim || pKiller == g_iAssist[pVictim] || !is_user_connected(g_iAssist[pVictim])) return;
 	
 	rg_add_account(g_iAssist[pVictim], 300, true);
-	new Float:iFrags = (get_entvar(g_iAssist[pVictim], var_frags) + 1.0);
-	set_entvar(g_iAssist[pVictim], var_frags, iFrags);
+	new iFrags = get_user_frags(g_iAssist[pVictim]) + 1;
+	set_entvar(g_iAssist[pVictim], var_frags, float(iFrags));
 #if defined LIVE_UPDATE
 	static mScoreInfo; if(!mScoreInfo) mScoreInfo = get_user_msgid("ScoreInfo");
 	message_begin(MSG_ALL, mScoreInfo);
 	write_byte(g_iAssist[pVictim]);
-	write_short(floatround(iFrags));
+	write_short(iFrags);
 	write_short(get_member(g_iAssist[pVictim], m_iDeaths));
 	write_short(0);
 	write_short(get_member(g_iAssist[pVictim], m_iTeam));
