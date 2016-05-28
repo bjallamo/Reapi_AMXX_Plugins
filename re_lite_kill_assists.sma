@@ -22,14 +22,12 @@ public plugin_init()
 	RegisterHookChain(RG_CBasePlayer_TakeDamage, "eDamage", 1);
 }
 
-public client_disconnect(id)
-	ResetAssist(id);
+public client_disconnect(id) ResetAssist(id);
 
 public eRoundStart()
 {
 	new pl[32], pnum; get_players(pl, pnum);
-	for(new i; i < pnum; i++)
-		ResetAssist(pl[i]);
+	for(new i; i < pnum; i++) ResetAssist(pl[i]);
 }
 	
 public eDeathMsg(const this, pevAttacker, iGib)
@@ -49,8 +47,7 @@ public eDeathMsg(const this, pevAttacker, iGib)
 	write_short(get_member(g_iAssist[this], m_iTeam));
 	message_end();
 #endif
-	new victim[32];
-	get_user_name(this, victim, charsmax(victim));
+	new victim[32]; get_user_name(this, victim, charsmax(victim));
 	client_print_color(g_iAssist[this], print_team_default, "^4[%s]^1 Kaptál ^4+1^1 fraget, mert segítettél^3 %s ^1megölésében.", PREFIX, victim);	
 	ResetAssist(this);
 }
@@ -58,10 +55,9 @@ public eDeathMsg(const this, pevAttacker, iGib)
 public eDamage(const this, pevInflictor, pevAttacker, Float:flDamage, bitsDamageType)
 {
 	if(this == pevAttacker || !IsValidPlayers(this, pevAttacker)) return;
-	if(!GetHookChainReturn()) return; // TakeDamage is not get damage from teammate more, even if "mp_friendlyfire" is "1"
+	if(!GetHookChainReturn()) return; // TakeDamage is not get damage from teammate more if "mp_friendlyfire" is "0"
 	g_iAssDamage[this][pevAttacker] += flDamage;
-	if(!g_iAssist[this] && g_iAssDamage[this][pAttacker] >= 50)
-		g_iAssist[this] = pevAttacker;
+	if(!g_iAssist[this] && g_iAssDamage[this][pAttacker] >= 50) g_iAssist[this] = pevAttacker;
 }
 
 ResetAssist(id)
