@@ -57,7 +57,7 @@ public eDamage(const this, pevInflictor, pevAttacker, Float:flDamage, bitsDamage
 	if(this == pevAttacker || !IsValidPlayers(this, pevAttacker)) return;
 	if(!GetHookChainReturn()) return; // TakeDamage is not get damage from teammate more if "mp_friendlyfire" is "0"
 	g_iAssDamage[this][pevAttacker] += flDamage;
-	if(!g_iAssist[this] && g_iAssDamage[this][pAttacker] >= 50) g_iAssist[this] = pevAttacker;
+	if(!g_iAssist[this] && g_iAssDamage[this][pevAttacker] >= 50) g_iAssist[this] = pevAttacker;
 }
 
 ResetAssist(id)
