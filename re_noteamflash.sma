@@ -10,7 +10,7 @@ new const AUTHOR[] = "mforce"
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	RegisterHookChain(RG_PlayerBlind, "fwdPlayerBlind");
+	RegisterHookChain(RG_PlayerBlind, "fwdPlayerBlind", false);
 }
 
 public fwdPlayerBlind(id, inflictor, attacker) {
