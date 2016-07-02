@@ -18,7 +18,7 @@ new player_jumps[33][jdata]
 
 public plugin_init() {
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	RegisterHookChain(RG_CBasePlayer_Jump, "Hook_PlayerJump");
+	RegisterHookChain(RG_CBasePlayer_Jump, "Hook_PlayerJump", false);
 }
 
 public Hook_PlayerJump(id) {
