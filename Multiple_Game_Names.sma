@@ -11,5 +11,5 @@ public plugin_init() {
 }
 
 public re_gamename() {
-	set_member_game(m_GameDesc, GAME_NAMES[iGameName > charsmax(GAME_NAMES) ? (iGameName = 0):iGameName++]);
+	set_member_game(m_GameDesc, GAME_NAMES[iGameName++ % sizeof(GAME_NAMES)]);
 }
